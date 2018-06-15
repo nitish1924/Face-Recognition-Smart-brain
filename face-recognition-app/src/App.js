@@ -11,7 +11,7 @@ import Signin from './components/Signin/Signin';
 import Register from './components/Register/Register';
 
 const app = new Clarifai.App({
- apiKey: 'f732806ab136409c9b861793bccc33d9'
+ apiKey : 'Your API Key'
 });
 
 const particlesOptions={
@@ -26,10 +26,7 @@ const particlesOptions={
    }
 }
 
-class App extends Component {
-  constructor(){
-    super();
-    this.state = {
+const initialState = {
       input:'',
       imageUrl:'',
       box:{},
@@ -42,15 +39,13 @@ class App extends Component {
           entries: 0,
           joined: ''
       }
-    }
+};
+
+class App extends Component {
+  constructor(){
+    super();
+    this.state = initialState;
   }
-
-
-  // componentDidMount(){
-  //   fetch('http://localhost:3000/')
-  //     .then(response => response.json())
-  //     .then(console.log) // is same as doing .then(data=>console.log(data))
-  // }
 
   loadUser = (data) => {
     this.setState({user:{
@@ -98,6 +93,7 @@ class App extends Component {
         .then(count=>{
           this.setState(Object.assign(this.state.user,{entries:count})) //object assign value to particular user
         })
+        .catch(console.log);
       }
       this.displayFaceBox(this.calculateFaceLocation(response))
     })
@@ -106,7 +102,7 @@ class App extends Component {
 
   onRouteChange = (route) => {
     if(route ==='signout'){
-      this.setState({isSignedIn:false})
+      this.setState(initialState);
     }else if(route === 'home'){
       this.setState({isSignedIn:true})
     }
@@ -131,7 +127,6 @@ class App extends Component {
             this.state.route === 'register' ?
              <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} /> 
              :<Signin loadUser={this.loadUser} onRouteChange={this.onRouteChange} />   
-
            )
        }
       </div>
