@@ -1,8 +1,14 @@
 const handleRegister = (req,res,db,bcrypt)=>{
 	const{email,name,password} = req.body; //destructuring
 	if(!email||!name||!password){ // checking blank fields
-		return res.status(400).json('incorrect form submission');
+		return res.status(400).json('All fields are mandatory!!!');
 	}
+	const etest=/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+	if(etest.test(email)==false)
+	{
+		return res.status(400).json('Email Id not valid...please enter a valid email id!!!');
+	}
+	
 	const hash=bcrypt.hashSync(password);
 	db.transaction(trx => { // transactions are there to ensure consistency between multiple tables
 		trx.insert({
@@ -24,7 +30,10 @@ const handleRegister = (req,res,db,bcrypt)=>{
 			})
 		})
 		.then(trx.commit)
-		.catch(trx.rollback);
+		.catch(()=>{
+			trx.rollback;
+			return res.status(400).json('User already registered...register using different email!!');
+		});
 	})
 	.catch(err => res.status(400).json('unable to register'));
 }

@@ -9,9 +9,11 @@ import Rank from './components/Rank/Rank';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import Signin from './components/Signin/Signin';
 import Register from './components/Register/Register';
+import ErrorValidation from './components/ErrorValidation/ErrorValidation';
+
 
 const app = new Clarifai.App({
- apiKey : 'Your API Key'
+ apiKey : 'f732806ab136409c9b861793bccc33d9'
 });
 
 const particlesOptions={
@@ -32,6 +34,7 @@ const initialState = {
       box:{},
       route:'signin',
       isSignedIn: false,
+      error:'',
       user: {
           id: '',
           name: '',
@@ -45,6 +48,10 @@ class App extends Component {
   constructor(){
     super();
     this.state = initialState;
+  }
+
+  errorValidation = (data) => {
+    this.setState({error:data});
   }
 
   loadUser = (data) => {
@@ -125,8 +132,14 @@ class App extends Component {
             </div>
           :(
             this.state.route === 'register' ?
-             <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} /> 
-             :<Signin loadUser={this.loadUser} onRouteChange={this.onRouteChange} />   
+              <div>
+                <ErrorValidation error={this.state.error}/>
+                <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} errorValidation={this.errorValidation} />
+              </div> 
+             :<div>
+                <ErrorValidation error={this.state.error}/>
+                <Signin loadUser={this.loadUser} onRouteChange={this.onRouteChange} errorValidation={this.errorValidation}/>
+              </div>   
            )
        }
       </div>

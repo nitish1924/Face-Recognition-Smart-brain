@@ -36,6 +36,9 @@ class Signin extends React.Component {
 				this.props.loadUser(data);
 				this.props.onRouteChange('home');
 			}
+			else{
+				this.props.errorValidation(data)
+			}
 		})
 		
 	}
